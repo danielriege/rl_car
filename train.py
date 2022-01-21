@@ -3,17 +3,25 @@
 import gym
 import tinycarlo
 import tensorflow as tf
-from tensorflow.keras import layers
 import numpy as np
 import matplotlib.pyplot as plt
 
-import src.action_noise
-import src.buffer
-import src.models
+from src import action_noise
+from src import buffer
+from src import models
 
-env = gym.make("tinycarlo-v0", fps=30, camera_resolution=(480//4,640//4), reward_red=-1)
+env = gym.make("tinycarlo-v0", fps=30, camera_resolution=(480//4,640//4), reward_red='done')
+
+state_shape = env.observation_space.shape # 3 channel image
+num_actions = env.action_space.shape[0]
+
+lower_bound = -1 # min action value
+upper_bound = 1 # max action value
 
 def policy(state, noise_object):
+    '''
+    returns an action sampled from Actor network plus some noise for exploration.
+    '''
     sampled_actions = tf.squeeze(actor_model(state))
     noise = noise_object()
     # Adding noise to action
@@ -33,13 +41,13 @@ def update_target(target_weights, weights, tau):
 
 
 std_dev = 0.2
-ou_noise = OUActionNoise(mean=np.zeros(1), std_deviation=float(std_dev) * np.ones(1))
+ou_noise = action_noise.OUActionNoise(mean=np.zeros(1), std_deviation=float(std_dev) * np.ones(1))
 
-actor_model = get_actor()
-critic_model = get_critic()
+actor_model = models.get_actor(state_shape=state_shape)
+critic_model = models.get_critic(state_shape=state_shape,num_actions=num_actions)
 
-target_actor = get_actor()
-target_critic = get_critic()
+target_actor = models.get_actor(state_shape=state_shape)
+target_critic = models.get_critic(state_shape=state_shape, num_actions=num_actions)
 
 # Making the weights equal initially
 target_actor.set_weights(actor_model.get_weights())
@@ -58,19 +66,16 @@ gamma = 0.99
 # Used to update target networks
 tau = 0.005
 
-buffer = Buffer(50000, 64)
+buffer = buffer.Buffer(state_shape, num_actions, actor_model, target_actor, critic_model, target_critic, 50000, 64)
 
 # To store reward history of each episode
 ep_reward_list = []
 # To store average reward history of last few episodes
 avg_reward_list = []
 
-# Takes about 4 min to train
 for ep in range(total_episodes):
-
     prev_state = env.reset()
     episodic_reward = 0
-
     while True:
         # Uncomment this to see the Actor in action
         # But not in a python notebook.
@@ -93,9 +98,7 @@ for ep in range(total_episodes):
         if done:
             observation = env.reset()
             break
-
         prev_state = state
-
     ep_reward_list.append(episodic_reward)
 
     # Mean of last 40 episodes
