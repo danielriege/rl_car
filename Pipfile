@@ -6,6 +6,8 @@ name = "pypi"
 [packages]
 gym = "*"
 tinycarlo = {editable = true, git = "https://github.com/tinycar-ai/tinycarlo"}
+tensorflow-gpu = "*"
+matplotlib = "*"
 
 [dev-packages]
 

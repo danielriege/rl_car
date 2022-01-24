@@ -10,7 +10,7 @@ from src import action_noise
 from src import buffer
 from src import models
 
-env = gym.make("tinycarlo-v0", fps=30, camera_resolution=(480//4,640//4), reward_red='done')
+env = gym.make("tinycarlo-v0", fps=30, camera_resolution=(480//4,640//4), reward_red='done', reward_green=-6, reward_tick=6, render_realtime=False)
 
 state_shape = env.observation_space.shape # 3 channel image
 num_actions = env.action_space.shape[0]
@@ -66,7 +66,7 @@ gamma = 0.99
 # Used to update target networks
 tau = 0.005
 
-buffer = buffer.Buffer(state_shape, num_actions, actor_model, target_actor, critic_model, target_critic, 50000, 64)
+buffer = buffer.Buffer(state_shape, num_actions, actor_model, target_actor, critic_model, target_critic, critic_optimizer, actor_optimizer, gamma,  1000, 64)
 
 # To store reward history of each episode
 ep_reward_list = []

@@ -6,9 +6,19 @@ def get_actor(state_shape):
     last_init = tf.random_uniform_initializer(minval=-0.003, maxval=0.003)
 
     inputs = layers.Input(shape=state_shape)
-    out = layers.Dense(256, activation="relu")(inputs)
-    out = layers.Dense(256, activation="relu")(out)
-    outputs = layers.Dense(1, activation="tanh", kernel_initializer=last_init)(out)
+    state_out = layers.Conv2D(16, (3,3), strides=(2,2), padding='same', activation='relu')(inputs)
+    state_out = layers.BatchNormalization()(state_out)
+    state_out = layers.Conv2D(32, (3,3), strides=(2,2), padding='same', activation='relu')(state_out)
+    state_out = layers.BatchNormalization()(state_out)
+    state_out = layers.Conv2D(64, (3,3), strides=(2,2), padding='same', activation='relu')(state_out)
+    state_out = layers.BatchNormalization()(state_out)
+    state_out = layers.Conv2D(128, (3,3), strides=(2,2), padding='same', activation='relu')(state_out)
+
+    state_out = layers.Flatten()(state_out)
+    state_out = layers.Dense(256, activation='relu')(state_out)
+    state_out = layers.Dense(32, activation='relu')(state_out)
+    
+    outputs = layers.Dense(1, activation="tanh", kernel_initializer=last_init)(state_out)
 
     model = tf.keras.Model(inputs, outputs)
     return model
@@ -17,8 +27,19 @@ def get_actor(state_shape):
 def get_critic(state_shape, num_actions=1):
     # State as input
     state_input = layers.Input(shape=state_shape)
-    state_out = layers.Dense(16, activation="relu")(state_input)
-    state_out = layers.Dense(32, activation="relu")(state_out)
+    #state_out = layers.Dense(16, activation="relu")(state_input)
+    #state_out = layers.Dense(32, activation="relu")(state_out)
+    state_out = layers.Conv2D(16, (3,3), strides=(2,2), padding='same', activation='relu')(state_input)
+    state_out = layers.BatchNormalization()(state_out)
+    state_out = layers.Conv2D(32, (3,3), strides=(2,2), padding='same', activation='relu')(state_out)
+    state_out = layers.BatchNormalization()(state_out)
+    state_out = layers.Conv2D(64, (3,3), strides=(2,2), padding='same', activation='relu')(state_out)
+    state_out = layers.BatchNormalization()(state_out)
+    state_out = layers.Conv2D(128, (3,3), strides=(2,2), padding='same', activation='relu')(state_out)
+
+    state_out = layers.Flatten()(state_out)
+    state_out = layers.Dense(256, activation='relu')(state_out)
+    state_out = layers.Dense(32, activation='relu')(state_out)
 
     # Action as input
     action_input = layers.Input(shape=(num_actions))
