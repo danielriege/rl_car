@@ -1,5 +1,6 @@
 #!/usr/bin/env python3.9
-
+import sys
+sys.path.append('../tinycarlo/')
 import gym
 import tinycarlo
 import tensorflow as tf

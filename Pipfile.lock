@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7fd560cde0a84d96e33f6465cad9967cafd96b09a4de56d5ed8a44879b4b33b7"
+            "sha256": "d3462289e86056b17503ae034753b7e468ebeb64794362daff18281fa99238b6"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -370,19 +370,6 @@
             "markers": "python_version >= '3.6'",
             "version": "==3.1.1"
         },
-        "opencv-python": {
-            "hashes": [
-                "sha256:130cc75d56b29aa3c5de8b6ac438242dd2574ba6eaa8bccdffdcfd6b78632f7f",
-                "sha256:2601388def0d6b957cc30dd88f8ff74a5651ae6940dd9e488241608cfa2b15c7",
-                "sha256:3a75c7ad45b032eea0c72e389aac6dd435f5c87e87f60237095c083400bc23aa",
-                "sha256:3efe232b32d5e1327e7c82bc6d61230737821c5190ce5c783e64a1bc8d514e18",
-                "sha256:71fdc49df412b102d97f14927321309043c79c4a3582cce1dc803370ff9c39c0",
-                "sha256:ac92e743e22681f30001942d78512c1e39bce53dbffc504e5645fdc45c0f2c47",
-                "sha256:c463d2276d8662b972d20ca9644702188507de200ca5405b89e1fe71c5c99989"
-            ],
-            "markers": "python_version >= '3.6'",
-            "version": "==4.5.5.62"
-        },
         "opt-einsum": {
             "hashes": [
                 "sha256:2455e59e3947d3c275477df7f5205b30635e266fe6dc300e3d9f9646bfcea147",
@@ -624,11 +611,6 @@
                 "sha256:1d6d69ce66211143803fbc56652b41d73b4a400a2891d7bf7a1cdf4c02de613b"
             ],
             "version": "==1.1.0"
-        },
-        "tinycarlo": {
-            "editable": true,
-            "git": "https://github.com/tinycar-ai/tinycarlo",
-            "ref": "260db1134bbf8eb4a9b95c087326d31df09efdce"
         },
         "typing-extensions": {
             "hashes": [
