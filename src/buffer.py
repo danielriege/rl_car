@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 
 class Buffer:
-    def __init__(self, state_shape, num_actions, actor_model, target_actor, critic_model, target_critic, buffer_capacity=100000, batch_size=64):
+    def __init__(self, state_shape, num_actions, actor_model, target_actor, critic_model, target_critic, critic_optimizer, actor_optimizer, gamma, buffer_capacity=100000, batch_size=64):
         # Number of "experiences" to store at max
         self.buffer_capacity = buffer_capacity
         # Num of tuples to train on.
@@ -12,6 +12,9 @@ class Buffer:
         self.target_actor = target_actor
         self.critic_model = critic_model
         self.target_critic = target_critic
+        self.critic_optimizer = critic_optimizer
+        self.actor_optimizer =actor_optimizer
+        self.gamma = gamma 
 
         # Its tells us num of times record() was called.
         self.buffer_counter = 0
@@ -47,14 +50,14 @@ class Buffer:
         # See Pseudo Code.
         with tf.GradientTape() as tape:
             target_actions = self.target_actor(next_state_batch, training=True)
-            y = reward_batch + gamma * self.target_critic(
+            y = reward_batch + self.gamma * self.target_critic(
                 [next_state_batch, target_actions], training=True
             )
             critic_value = self.critic_model([state_batch, action_batch], training=True)
             critic_loss = tf.math.reduce_mean(tf.math.square(y - critic_value))
 
         critic_grad = tape.gradient(critic_loss, self.critic_model.trainable_variables)
-        critic_optimizer.apply_gradients(
+        self.critic_optimizer.apply_gradients(
             zip(critic_grad, self.critic_model.trainable_variables)
         )
 
@@ -66,7 +69,7 @@ class Buffer:
             actor_loss = -tf.math.reduce_mean(critic_value)
 
         actor_grad = tape.gradient(actor_loss, self.actor_model.trainable_variables)
-        actor_optimizer.apply_gradients(
+        self.actor_optimizer.apply_gradients(
             zip(actor_grad, self.actor_model.trainable_variables)
         )
 
