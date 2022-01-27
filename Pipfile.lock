@@ -83,7 +83,7 @@
         "tinycarlo": {
             "editable": true,
             "git": "https://github.com/tinycar-ai/tinycarlo",
-            "ref": "4c851e392fd5b2704d5f5e869f3abb7347bb10a5"
+            "ref": "f672c5fcb504b78d8fbd7788e0f5dcef0e5b5840"
         }
     },
     "develop": {}
